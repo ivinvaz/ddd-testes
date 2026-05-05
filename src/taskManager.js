@@ -1,3 +1,12 @@
+// ============================================================
+// taskManager.js — Regras de negócio do gerenciador de tarefas
+// ============================================================
+// Todas as funções são PURAS:
+//   - mesma entrada → mesma saída
+//   - sem efeitos colaterais
+//   - sem dependência de DOM, banco de dados ou APIs externas
+// ============================================================
+
 let _nextId = 1;
 
 /**
@@ -49,4 +58,15 @@ export function addTask(tasks, title) {
 
   const newTask = createTask(title);
   return [...tasks, newTask];
+}
+
+// ------------------------------------------------------------
+// Alteração de estado
+// ------------------------------------------------------------
+
+export function toggleTask(task) {
+  return {
+    ...task,
+    completed: !task.completed,
+  };
 }
