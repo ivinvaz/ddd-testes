@@ -338,3 +338,29 @@ describe('countCompleted', () => {
     expect(countCompleted(noCompleted)).toBe(0);
   });
 });
+
+describe('countPending', () => {
+  let tasks;
+
+  beforeEach(() => {
+    resetId();
+    tasks = addTask([], 'Tarefa 1');
+    tasks = addTask(tasks, 'Tarefa 2');
+    tasks = addTask(tasks, 'Tarefa 3');
+    tasks = tasks.map((t) => (t.id === 1 ? toggleTask(t) : t));
+  });
+
+  it('deve retornar 0 para lista vazia', () => {
+    expect(countPending([])).toBe(0);
+  });
+
+  it('deve contar corretamente as tarefas pendentes', () => {
+    expect(countPending(tasks)).toBe(2);
+  });
+
+  it('deve retornar 0 quando todas as tarefas estão concluídas', () => {
+    const allCompleted = tasks.map((t) => ({ ...t, completed: true }));
+
+    expect(countPending(allCompleted)).toBe(0);
+  });
+});
