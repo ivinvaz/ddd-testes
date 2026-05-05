@@ -7,7 +7,8 @@ import {
   toggleTask,
   removeTask,
   filterTasks,
-  countTasks
+  countTasks,
+  countCompleted
 } from '../src/taskManager.js';
 
 // ============================================================
