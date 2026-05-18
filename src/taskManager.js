@@ -37,11 +37,12 @@ export function validateTitle(title) {
 // Criação
 // ------------------------------------------------------------
 
-export function createTask(title) {
+export function createTask(title, priority = 'medium') {
   return {
     id: _nextId++,
     title: title.trim(),
     completed: false,
+    priority,
   };
 }
 
@@ -109,4 +110,16 @@ export function countCompleted(tasks) {
 
 export function countPending(tasks) {
   return tasks.filter((task) => task.completed === false).length;
+}
+
+// ------------------------------------------------------------
+// Prioridade
+// ------------------------------------------------------------
+
+export function validatePriority(priority) {
+  return priority === 'low' || priority === 'medium' || priority === 'high';
+}
+
+export function filterByPriority(tasks, priority) {
+  return tasks.filter((task) => task.priority === priority);
 }
