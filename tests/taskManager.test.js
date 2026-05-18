@@ -12,6 +12,7 @@ import {
   countPending,
   validatePriority,
   filterByPriority,
+  isDuplicate,
 } from '../src/taskManager.js';
 
 // ============================================================
@@ -458,5 +459,62 @@ describe('filterByPriority', () => {
   it('deve retornar um NOVO array (imutabilidade)', () => {
     const result = filterByPriority(tasks, 'medium');
     expect(result).not.toBe(tasks);
+  });
+});
+
+// ============================================================
+// 11. isDuplicate
+// ============================================================
+describe('isDuplicate', () => {
+  let tasks;
+
+  beforeEach(() => {
+    resetId();
+    tasks = addTask([], 'Estudar');
+  });
+
+  it('deve retornar true para título idêntico', () => {
+    expect(isDuplicate(tasks, 'Estudar')).toBe(true);
+  });
+
+  it('deve retornar true para título com diferença de maiúsculas', () => {
+    expect(isDuplicate(tasks, 'estudar')).toBe(true);
+  });
+
+  it('deve retornar true para título com espaços extras', () => {
+    expect(isDuplicate(tasks, '  Estudar  ')).toBe(true);
+  });
+
+  it('deve retornar false para título diferente', () => {
+    expect(isDuplicate(tasks, 'Trabalhar')).toBe(false);
+  });
+
+  it('deve retornar false para lista vazia', () => {
+    expect(isDuplicate([], 'Estudar')).toBe(false);
+  });
+});
+
+// ============================================================
+// 12. addTask com verificação de duplicata
+// ============================================================
+describe('addTask com verificação de duplicata', () => {
+  beforeEach(() => {
+    resetId();
+  });
+
+  it('deve lançar erro ao adicionar tarefa duplicada', () => {
+    const tasks = addTask([], 'Estudar');
+    expect(() => addTask(tasks, 'Estudar')).toThrow('Tarefa duplicada');
+  });
+
+  it('deve lançar erro para duplicata com casing diferente', () => {
+    const tasks = addTask([], 'Estudar');
+    expect(() => addTask(tasks, 'ESTUDAR')).toThrow('Tarefa duplicada');
+  });
+
+  it('deve adicionar normalmente quando não há duplicata', () => {
+    let tasks = addTask([], 'Estudar');
+    tasks = addTask(tasks, 'Trabalhar');
+    expect(tasks).toHaveLength(2);
   });
 });
