@@ -136,3 +136,14 @@ export function validatePriority(priority) {
 export function filterByPriority(tasks, priority) {
   return tasks.filter((task) => task.priority === priority);
 }
+
+// ------------------------------------------------------------
+// Ordenação
+// ------------------------------------------------------------
+
+export function sortTasks(tasks) {
+  return [...tasks].sort((a, b) => {
+    if (a.completed === b.completed) return 0;
+    return a.completed ? 1 : -1;
+  });
+}
