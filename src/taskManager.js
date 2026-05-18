@@ -47,6 +47,15 @@ export function createTask(title, priority = 'medium') {
 }
 
 // ------------------------------------------------------------
+// Duplicatas
+// ------------------------------------------------------------
+
+export function isDuplicate(tasks, title) {
+  const normalized = title.trim().toLowerCase();
+  return tasks.some((task) => task.title.toLowerCase() === normalized);
+}
+
+// ------------------------------------------------------------
 // Adição com validação
 // ------------------------------------------------------------
 
@@ -55,6 +64,10 @@ export function addTask(tasks, title) {
     throw new Error(
       'Título inválido: deve ser uma string com pelo menos 3 caracteres.'
     );
+  }
+
+  if (isDuplicate(tasks, title)) {
+    throw new Error('Tarefa duplicada: já existe uma tarefa com esse título.');
   }
 
   const newTask = createTask(title);
