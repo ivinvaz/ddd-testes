@@ -13,6 +13,7 @@ import {
   validatePriority,
   filterByPriority,
   isDuplicate,
+  sortTasks,
 } from '../src/taskManager.js';
 
 // ============================================================
@@ -516,5 +517,58 @@ describe('addTask com verificação de duplicata', () => {
     let tasks = addTask([], 'Estudar');
     tasks = addTask(tasks, 'Trabalhar');
     expect(tasks).toHaveLength(2);
+  });
+});
+
+// ============================================================
+// 13. sortTasks
+// ============================================================
+describe('sortTasks', () => {
+  let tasks;
+
+  beforeEach(() => {
+    resetId();
+    tasks = addTask([], 'Tarefa 1');
+    tasks = addTask(tasks, 'Tarefa 2');
+    tasks = addTask(tasks, 'Tarefa 3');
+    // Tarefa 2 concluída; 1 e 3 pendentes
+    tasks = tasks.map((t) => (t.id === 2 ? toggleTask(t) : t));
+  });
+
+  it('deve colocar pendentes antes das concluídas', () => {
+    const sorted = sortTasks(tasks);
+    expect(sorted[0].completed).toBe(false);
+    expect(sorted[1].completed).toBe(false);
+    expect(sorted[2].completed).toBe(true);
+  });
+
+  it('deve manter a ordem relativa dentro de cada grupo', () => {
+    const sorted = sortTasks(tasks);
+    expect(sorted[0].title).toBe('Tarefa 1');
+    expect(sorted[1].title).toBe('Tarefa 3');
+    expect(sorted[2].title).toBe('Tarefa 2');
+  });
+
+  it('deve retornar a lista intacta se todas forem pendentes', () => {
+    resetId();
+    let allPending = addTask([], 'Aaa');
+    allPending = addTask(allPending, 'Bbb');
+    const sorted = sortTasks(allPending);
+    expect(sorted[0].title).toBe('Aaa');
+    expect(sorted[1].title).toBe('Bbb');
+  });
+
+  it('deve retornar lista com comprimento correto se todas forem concluídas', () => {
+    const allDone = tasks.map((t) => ({ ...t, completed: true }));
+    expect(sortTasks(allDone)).toHaveLength(3);
+  });
+
+  it('deve retornar array vazio para lista vazia', () => {
+    expect(sortTasks([])).toHaveLength(0);
+  });
+
+  it('deve retornar um NOVO array (imutabilidade)', () => {
+    const sorted = sortTasks(tasks);
+    expect(sorted).not.toBe(tasks);
   });
 });
