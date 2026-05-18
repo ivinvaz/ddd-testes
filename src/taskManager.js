@@ -147,3 +147,14 @@ export function sortTasks(tasks) {
     return a.completed ? 1 : -1;
   });
 }
+
+// ------------------------------------------------------------
+// Busca
+// ------------------------------------------------------------
+
+export function searchTasks(tasks, query) {
+  const normalized = query.trim().toLowerCase();
+  return tasks.filter((task) =>
+    task.title.toLowerCase().includes(normalized)
+  );
+}
