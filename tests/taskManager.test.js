@@ -14,6 +14,7 @@ import {
   filterByPriority,
   isDuplicate,
   sortTasks,
+  searchTasks,
 } from '../src/taskManager.js';
 
 // ============================================================
@@ -570,5 +571,48 @@ describe('sortTasks', () => {
   it('deve retornar um NOVO array (imutabilidade)', () => {
     const sorted = sortTasks(tasks);
     expect(sorted).not.toBe(tasks);
+  });
+
+  
+// ============================================================
+// 14. searchTasks
+// ============================================================
+describe('searchTasks', () => {
+  let tasks;
+
+  beforeEach(() => {
+    resetId();
+    tasks = addTask([], 'Estudar Vitest');
+    tasks = addTask(tasks, 'Testar código');
+    tasks = addTask(tasks, 'Revisar PR');
+  });
+
+  it('deve encontrar tarefas que contêm a query', () => {
+    const result = searchTasks(tasks, 'est');
+    expect(result).toHaveLength(2);
+  });
+
+  it('deve ser case-insensitive', () => {
+    const result = searchTasks(tasks, 'EST');
+    expect(result).toHaveLength(2);
+  });
+
+  it('deve retornar array vazio quando não há correspondência', () => {
+    const result = searchTasks(tasks, 'xyz');
+    expect(result).toHaveLength(0);
+  });
+
+  it('deve retornar todas as tarefas para query vazia', () => {
+    const result = searchTasks(tasks, '');
+    expect(result).toHaveLength(3);
+  });
+
+  it('deve retornar array vazio para lista vazia', () => {
+    expect(searchTasks([], 'algo')).toHaveLength(0);
+  });
+
+  it('deve retornar um NOVO array (imutabilidade)', () => {
+    const result = searchTasks(tasks, '');
+    expect(result).not.toBe(tasks);
   });
 });
